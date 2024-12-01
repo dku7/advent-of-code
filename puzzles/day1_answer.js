@@ -1,4 +1,4 @@
-const findDifferenceBetween = require("./day1");
+const { findDifferenceBetween, findSimilarities } = require("../puzzles/day1");
 const fs = require("fs/promises");
 
 const fileToRead = __dirname + "/../data/day1_input.txt";
@@ -14,6 +14,7 @@ fs.readFile(fileToRead, "utf-8")
     }
   })
   .then(() => {
-    console.log(findDifferenceBetween(list1, list2));
+    console.log(`part 1: ${findDifferenceBetween(list1, list2)}`);
+    console.log(`part 2: ${findSimilarities(list1, list2)}`);
   })
   .catch((error) => console.log(error));

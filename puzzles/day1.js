@@ -12,4 +12,22 @@ const findDifferenceBetween = (list1, list2) => {
   } else return 0;
 };
 
-module.exports = findDifferenceBetween;
+const findSimilarities = (list1, list2) => {
+  if (list1?.length > 0 && list2?.length > 0) {
+    let score = 0;
+
+    for (firstNumber of list1) {
+      const timesRepeated = list2.filter(
+        (secondNumber) => secondNumber === firstNumber
+      ).length;
+
+      score += firstNumber * timesRepeated;
+    }
+
+    return score;
+  }
+
+  return 0;
+};
+
+module.exports = { findDifferenceBetween, findSimilarities };
