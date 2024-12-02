@@ -14,10 +14,7 @@ fs.readFile(fileToRead, "utf-8")
       else list2.push(Number(element));
     });
 
-    return [list1, list2];
-  })
-  .then((lists) => {
-    console.log(`part 1: ${findDifferenceBetween(lists[0], lists[1])}`);
-    console.log(`part 2: ${findSimilarities(lists[0], lists[1])}`);
+    console.log(`part 1: ${findDifferenceBetween(list1, list2)}`);
+    console.log(`part 2: ${findSimilarities(list1, list2)}`);
   })
   .catch((error) => console.log(error));
