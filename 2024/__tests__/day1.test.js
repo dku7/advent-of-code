@@ -22,6 +22,16 @@ describe("findDifferenceBetween", () => {
       117
     );
   });
+
+  it("should not mutate the passed in arrays", () => {
+    const input1 = [10, 1, 70, 2];
+    const input2 = [11, 3, 8, 1];
+
+    findDifferenceBetween(input1, input2);
+
+    expect(input1).toEqual([10, 1, 70, 2]);
+    expect(input2).toEqual([11, 3, 8, 1]);
+  });
 });
 
 describe("findSimilarities", () => {
@@ -39,5 +49,15 @@ describe("findSimilarities", () => {
 
   it("should return the correct score when multiple elements are repeated", () => {
     expect(findSimilarities([3, 4, 2, 1, 3, 3], [4, 3, 5, 3, 9, 3])).toBe(31);
+  });
+
+  it("should not mutate the passed in arrays", () => {
+    const input1 = [10, 1, 70, 2];
+    const input2 = [11, 1, 2, 1];
+
+    findSimilarities(input1, input2);
+
+    expect(input1).toEqual([10, 1, 70, 2]);
+    expect(input2).toEqual([11, 1, 2, 1]);
   });
 });
