@@ -1,4 +1,4 @@
-const { getNumberOfSafeReports } = require("../puzzles/day2");
+const { getNumberOfSafeReports } = require("../src/day2");
 
 describe("getSafeReports", () => {
   it("should return 0 when there is an increase in level of > 3", () => {

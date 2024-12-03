@@ -1,4 +1,4 @@
-const { findDifferenceBetween, findSimilarities } = require("../puzzles/day1");
+const { findDifferenceBetween, findSimilarities } = require("../src/day1");
 
 describe("findDifferenceBetween", () => {
   it("should return 0 if arrays are empty", () => {

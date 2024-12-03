@@ -1,4 +1,4 @@
-const sumInstructions = require("../puzzles/day3");
+const sumInstructions = require("../src/day3");
 
 describe("sumInstructions", () => {
   it("should return 0 when given a string containing invalid instructions", () => {

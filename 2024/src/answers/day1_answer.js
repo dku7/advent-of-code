@@ -1,6 +1,6 @@
-const { findDifferenceBetween, findSimilarities } = require("../puzzles/day1");
+const { findDifferenceBetween, findSimilarities } = require("../day1");
 const fs = require("fs/promises");
-const fileToRead = __dirname + "/../data/day1_input.txt";
+const fileToRead = __dirname + "/../../data/day1_input.txt";
 
 fs.readFile(fileToRead, "utf-8")
   .then((fileContents) => fileContents.replaceAll("   ", "\n").split("\n"))

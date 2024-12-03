@@ -1,6 +1,6 @@
-const { getNumberOfSafeReports } = require("../puzzles/day2");
+const { getNumberOfSafeReports } = require("../day2");
 const fs = require("fs/promises");
-const fileToRead = __dirname + "/../data/day2_input.txt";
+const fileToRead = __dirname + "/../../data/day2_input.txt";
 
 fs.readFile(fileToRead, "utf-8")
   .then((fileContents) => fileContents.split("\n"))
