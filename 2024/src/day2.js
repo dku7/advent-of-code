@@ -11,7 +11,7 @@ const reportIsSafe = (levelChanges) =>
   levelChanges.every(changeIsPositiveAndSafe) ||
   levelChanges.every(changeIsNegativeAndSafe);
 
-const applyDampener = (report) => {
+function applyDampener(report) {
   for (let i = 0; i < report.length; i++) {
     const newReport = [...report];
     newReport.splice(i, 1);
@@ -21,9 +21,9 @@ const applyDampener = (report) => {
   }
 
   return false;
-};
+}
 
-const getNumberOfSafeReports = (reports, useDampener = false) => {
+function getNumberOfSafeReports(reports, useDampener = false) {
   const parsedReports = parseReports(reports);
   let safeReportCount = 0;
 
@@ -37,6 +37,6 @@ const getNumberOfSafeReports = (reports, useDampener = false) => {
   }
 
   return safeReportCount;
-};
+}
 
 module.exports = { getNumberOfSafeReports };

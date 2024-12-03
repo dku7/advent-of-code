@@ -1,6 +1,6 @@
 const sortList = (list) => [...list].sort((a, b) => a - b);
 
-const findDifferenceBetween = (list1, list2) => {
+function findDifferenceBetween(list1, list2) {
   const sortedList1 = sortList(list1);
   const sortedList2 = sortList(list2);
   let totalDifference = 0;
@@ -10,9 +10,9 @@ const findDifferenceBetween = (list1, list2) => {
   }
 
   return totalDifference;
-};
+}
 
-const findSimilarities = (list1, list2) => {
+function findSimilarities(list1, list2) {
   let score = 0;
 
   for (const firstNumber of list1) {
@@ -24,6 +24,6 @@ const findSimilarities = (list1, list2) => {
   }
 
   return score;
-};
+}
 
 module.exports = { findDifferenceBetween, findSimilarities };

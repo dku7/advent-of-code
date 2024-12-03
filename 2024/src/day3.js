@@ -1,4 +1,4 @@
-const getRegEx = (enabledOnly) => {
+function getRegEx(enabledOnly) {
   const defaultRegEx = /(?:mul\()(\d+,\d+)(?:\))/;
   const conditionalRegEx = /|(don\'t\(\))|(do\(\))/;
 
@@ -6,27 +6,29 @@ const getRegEx = (enabledOnly) => {
     defaultRegEx.source + (enabledOnly ? conditionalRegEx.source : ""),
     "g"
   );
-};
+}
 
-const multiply = (expression) => {
+function multiply(expression) {
   const [digit1, digit2] = expression.split(",");
   return Number(digit1) * Number(digit2);
-};
+}
 
-const getProcessFunction = (calculationsEnabled) => (command, expression) => {
-  switch (command) {
-    case "don't()":
-      calculationsEnabled = false;
-      return 0;
-    case "do()":
-      calculationsEnabled = true;
-      return 0;
-    default:
-      return calculationsEnabled ? multiply(expression) : 0;
-  }
-};
+function getProcessFunction(calculationsEnabled) {
+  return (command, expression) => {
+    switch (command) {
+      case "don't()":
+        calculationsEnabled = false;
+        return 0;
+      case "do()":
+        calculationsEnabled = true;
+        return 0;
+      default:
+        return calculationsEnabled ? multiply(expression) : 0;
+    }
+  };
+}
 
-const sumInstructions = (input, enabledOnly = false) => {
+function sumInstructions(input, enabledOnly = false) {
   const instructions = input.matchAll(getRegEx(enabledOnly));
   let total = 0;
   const processInstruction = getProcessFunction(true);
@@ -37,6 +39,6 @@ const sumInstructions = (input, enabledOnly = false) => {
   }
 
   return total;
-};
+}
 
 module.exports = sumInstructions;
