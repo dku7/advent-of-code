@@ -4,12 +4,15 @@ const parseReports = (reports) =>
 const calculateLevelChanges = (report) =>
   report.slice(0, -1).map((level, index) => report[index + 1] - level);
 
-const changeIsPositiveAndSafe = (change) => change >= 1 && change <= 3;
-const changeIsNegativeAndSafe = (change) => change <= -1 && change >= -3;
+function reportIsSafe(levelChanges) {
+  const changeIsPositiveAndSafe = (change) => change >= 1 && change <= 3;
+  const changeIsNegativeAndSafe = (change) => change <= -1 && change >= -3;
 
-const reportIsSafe = (levelChanges) =>
-  levelChanges.every(changeIsPositiveAndSafe) ||
-  levelChanges.every(changeIsNegativeAndSafe);
+  return (
+    levelChanges.every(changeIsPositiveAndSafe) ||
+    levelChanges.every(changeIsNegativeAndSafe)
+  );
+}
 
 function applyDampener(report) {
   for (let i = 0; i < report.length; i++) {
