@@ -13,9 +13,6 @@ const multiply = (expression) => {
   return Number(digit1) * Number(digit2);
 };
 
-// take in total, and enabled in COVE
-// return fun that accepts command and expression
-
 const getProcessFunction = (calculationsEnabled) => (command, expression) => {
   switch (command) {
     case "don't()":
