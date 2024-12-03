@@ -16,7 +16,7 @@ const multiply = (expression) => {
 const sumInstructions = (input, enabledOnly = false) => {
   const instructions = input.matchAll(getRegEx(enabledOnly));
   let total = 0;
-  let calculationsDisabled = false;
+  let calculationsEnabled = true;
 
   for (const instruction of instructions) {
     const command = instruction[0];
@@ -24,13 +24,13 @@ const sumInstructions = (input, enabledOnly = false) => {
 
     switch (command) {
       case "don't()":
-        calculationsDisabled = true;
+        calculationsEnabled = false;
         break;
       case "do()":
-        calculationsDisabled = false;
+        calculationsEnabled = true;
         break;
       default:
-        total += calculationsDisabled ? 0 : multiply(expression);
+        total += calculationsEnabled ? multiply(expression) : 0;
     }
   }
 
