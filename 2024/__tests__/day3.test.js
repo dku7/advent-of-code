@@ -17,3 +17,24 @@ describe("sumInstructions", () => {
     ).toBe(161);
   });
 });
+
+describe.only("sumInstructions with enabledOnly", () => {
+  it("should return 0 when instruction has been disabled", () => {
+    expect(sumInstructions("don't()_mul(5,5)", true)).toBe(0);
+  });
+
+  it("should return the correct sum when instructions are disabled part way through", () => {
+    expect(sumInstructions("xmul(2,4)&mul[3,7]!^don't()_mul(5,5)", true)).toBe(
+      8
+    );
+  });
+
+  it("should return the correct sum when instructions are disabled and re-enabled", () => {
+    expect(
+      sumInstructions(
+        "xmul(2,4)&mul[3,7]!^don't()_mul(5,5)+mul(32,64](mul(11,8)undo()?mul(8,5))",
+        true
+      )
+    ).toBe(48);
+  });
+});
