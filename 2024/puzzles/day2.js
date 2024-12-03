@@ -27,14 +27,14 @@ const getNumberOfSafeReports = (reports, useDampener = false) => {
   const parsedReports = parseReports(reports);
   let safeReportCount = 0;
 
-  parsedReports.forEach((report) => {
+  for (const report of parsedReports) {
     const levelChanges = calculateLevelChanges(report);
     let safe = reportIsSafe(levelChanges);
 
     if (!safe && useDampener) safe = applyDampener(report);
 
     if (safe) safeReportCount++;
-  });
+  }
 
   return safeReportCount;
 };
