@@ -18,7 +18,7 @@ describe("sumInstructions", () => {
   });
 });
 
-describe.only("sumInstructions with enabledOnly", () => {
+describe("sumInstructions with enabledOnly", () => {
   it("should return 0 when instruction has been disabled", () => {
     expect(sumInstructions("don't()_mul(5,5)", true)).toBe(0);
   });

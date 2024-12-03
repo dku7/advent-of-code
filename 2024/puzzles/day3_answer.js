@@ -7,6 +7,7 @@ fs.readFile(fileToRead, "utf-8")
   .then((fileContents) => {
     const part1 = sumInstructions(fileContents);
     const part2 = sumInstructions(fileContents, true);
+
     console.log(`part 1: ${part1}`);
     console.log(`part 2: ${part2}`);
   })
