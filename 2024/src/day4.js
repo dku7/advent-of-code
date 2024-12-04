@@ -1,97 +1,191 @@
 const reverseWord = (word) => word.split("").reverse().join("");
 //todo: combine top to bottom to search both vertically and diagonally
+const findAllIndices = (line, char) => {
+  const indices = [];
+  for (let i = 0; i < line.length; i++) if (line[i] === char) indices.push(i);
+  return indices;
+};
 
-function diagonalOccurrences(currentIndex, lines, word) {
-  const indexOfFirstLetter = lines[currentIndex].indexOf(word[0]);
+function searchDiagonally(currentIndex, lines, word) {
+  const firstLetterIndices = findAllIndices(lines[currentIndex], word[0]);
+
   let occurrences = 0;
   let wordFound = false;
 
-  if (indexOfFirstLetter > -1 && lines.length >= word.length) {
-    let noOfRemainingLines = lines.length - currentIndex;
+  for (const indexOfFirstLetter of firstLetterIndices) {
+    if (lines.length >= word.length) {
+      let noOfRemainingLines = lines.length - currentIndex;
 
-    if (noOfRemainingLines >= word.length - 1) {
-      //search l-r:
-      for (let j = 1; j < word.length; j++) {
-        const nextLineLetter = lines[currentIndex + j][indexOfFirstLetter + j];
-        //console.log("next line: ", nextLineLetter);
-        const expectedLetter = word[j];
-        //console.log("expected letter: ", word[j]);
+      ///////////////////////////////////
+      // search downwards
+      ///////////////////////////////////
+      if (noOfRemainingLines >= word.length) {
+        //search l-r
+        for (let j = 1; j < word.length; j++) {
+          wordFound = false;
 
-        if (nextLineLetter !== expectedLetter) break;
-        wordFound = true;
-      }
+          const foundLetter = lines[currentIndex + j][indexOfFirstLetter + j];
+          const expectedLetter = word[j];
 
-      if (wordFound) occurrences++;
+          if (foundLetter !== expectedLetter) break;
+          wordFound = true;
+        }
+
+        if (wordFound) {
+          occurrences++;
+        }
+
+        // search r-l
+        if (indexOfFirstLetter >= lines[currentIndex].length - 1) {
+          for (let j = 1; j < word.length; j++) {
+            wordFound = false;
+            const foundLetter = lines[currentIndex + j][indexOfFirstLetter - j];
+            const expectedLetter = word[j];
+
+            if (foundLetter !== expectedLetter) break;
+            wordFound = true;
+          }
+
+          if (wordFound) {
+            occurrences++;
+          }
+        }
+      } // end search downwards
+
+      ///////////////////////////////////
+      // search upwards
+      ///////////////////////////////////
+      noOfRemainingLines = currentIndex - lines.length;
+      if (currentIndex - word.length >= -1) {
+        // l-r
+
+        for (let j = 1; j < word.length; j++) {
+          wordFound = false;
+          const foundLetter = lines[currentIndex - j][indexOfFirstLetter + j];
+          const expectedLetter = word[j];
+          // if (lines[currentIndex] === "MXMXAXMASX") {
+          //   console.log(
+          //     "foundLetter: ",
+          //     foundLetter,
+          //     ", expected letter: ",
+          //     expectedLetter
+          //   );
+          // }
+          if (foundLetter !== expectedLetter) break;
+          wordFound = true;
+        }
+        if (wordFound) {
+          // console.log(
+          //   "!!!FOUND ONE GOING UP, L-R!!!! for index: ",
+          //   indexOfFirstLetter
+          // );
+          occurrences++;
+        }
+
+        // search r-l
+        // if (indexOfFirstLetter >= lines[currentIndex].length - 1) {
+        //console.log("starting, found is: ", wordFound);
+        // console.log("===R-L===, processing index: ", indexOfFirstLetter);
+        for (let j = 1; j < word.length; j++) {
+          wordFound = false;
+          const foundLetter = lines[currentIndex - j][indexOfFirstLetter - j];
+          const expectedLetter = word[j];
+
+          if (foundLetter !== expectedLetter) break;
+          wordFound = true;
+        }
+
+        if (wordFound) {
+          // console.log(
+          //   "!!!FOUND ONE GOING UP, R-L!!!!l for index: ",
+          //   indexOfFirstLetter
+          // );
+          occurrences++;
+        }
+        // }
+      } // end search upwards
     }
+  }
 
-    // search r-l
-    if (indexOfFirstLetter >= lines[currentIndex].length - 1) {
-      wordFound = false;
+  // console.log(
+  //   `searching diagonally, line = ${lines[currentIndex]}, indices = ${firstLetterIndices}, currentIndex = ${currentIndex}, current line = ${lines[currentIndex]}, ${occurrences} found`
+  // );
+  return occurrences;
+}
 
-      for (let j = 1; j < word.length; j++) {
-        const nextLineLetter = lines[currentIndex + j][indexOfFirstLetter - j];
-        const expectedLetter = word[j];
+function searchVertically(currentIndex, lines, word) {
+  const firstLetterIndices = findAllIndices(lines[currentIndex], word[0]);
+  //const indexOfFirstLetter = lines[currentIndex].indexOf(word[0]);
+  let occurrences = 0;
+  let wordFound = false;
 
-        if (nextLineLetter !== expectedLetter) break;
-        wordFound = true;
+  for (indexOfFirstLetter of firstLetterIndices) {
+    if (lines.length >= word.length) {
+      let noOfRemainingLines = lines.length - currentIndex;
+
+      // top to bottom
+      if (noOfRemainingLines >= word.length - 1) {
+        for (let j = 1; j < word.length; j++) {
+          wordFound = false;
+          const foundLetter = lines[currentIndex + j][indexOfFirstLetter];
+          const expectedLetter = word[j];
+
+          if (foundLetter !== expectedLetter) break;
+          wordFound = true;
+        }
+
+        if (wordFound) occurrences++;
       }
 
-      if (wordFound) occurrences++;
+      // now search bottom to top
+      noOfRemainingLines = currentIndex - lines.length;
+      if (currentIndex - word.length >= -1) {
+        for (let j = 1; j < word.length; j++) {
+          wordFound = false;
+          const foundLetter = lines[currentIndex - j][indexOfFirstLetter];
+          const expectedLetter = word[j];
+
+          if (foundLetter !== expectedLetter) break;
+          wordFound = true;
+        }
+
+        if (wordFound) occurrences++;
+      }
     }
   }
 
   return occurrences;
 }
-
-function verticalOccurrences(currentIndex, lines, word) {
-  const indexOfFirstLetter = lines[currentIndex].indexOf(word[0]);
-  let occurrences = 0;
-  let wordFound = false;
-
-  if (indexOfFirstLetter > -1 && lines.length >= word.length) {
-    let noOfRemainingLines = lines.length - currentIndex;
-
-    // top to bottom
-    if (noOfRemainingLines >= word.length - 1) {
-      for (let j = 1; j < word.length; j++) {
-        const nextLineLetter = lines[currentIndex + j][indexOfFirstLetter];
-        const expectedLetter = word[j];
-
-        if (nextLineLetter !== expectedLetter) break;
-        wordFound = true;
-      }
-
-      if (wordFound) occurrences++;
-    }
-
-    // now search bottom to top
-    noOfRemainingLines = currentIndex - lines.length;
-    if (currentIndex - word.length >= -1) {
-      for (let j = 1; j < word.length; j++) {
-        const nextLineLetter = lines[currentIndex - j][indexOfFirstLetter];
-        const expectedLetter = word[j];
-
-        if (nextLineLetter !== expectedLetter) break;
-        wordFound = true;
-      }
-
-      if (wordFound) occurrences++;
-    }
-  }
-
-  return occurrences;
-}
-function findNumberOfWords(lines, word) {
+function findNumberOfWords(lines, word, index = 0) {
   let occurrences = 0;
   const reversedWord = reverseWord(word);
-  const regEx = new RegExp(`${word}|${reversedWord}`, "g");
+  const regEx = new RegExp(`(?=(${word}|${reversedWord}))`, "g");
+  // console.log(regEx);
+  let h = 0;
+  let v = 0;
+  let d = 0;
+  // console.log("lines: ", lines, "index: ", index);
 
-  for (let i = 0; i < lines.length; i++) {
-    const matches = [...lines[i].matchAll(regEx)];
+  //for (let i = 0; i < lines.length; i++) {
+  const matches = [...lines[index].matchAll(regEx)];
 
-    occurrences += matches.length;
-    occurrences += diagonalOccurrences(i, lines, word);
-    occurrences += verticalOccurrences(i, lines, word);
+  // async? Promise.all
+  h += matches.length;
+
+  d += searchDiagonally(index, lines, word);
+
+  v += searchVertically(index, lines, word);
+
+  console.log(`results for line ${index}: h: ${h}, d: ${d}, v: ${v}`);
+  //}
+
+  // console.log(`h: ${h}, d: ${d}, v: ${v}`);
+
+  occurrences += h + d + v;
+  // test to see if we're at the last line
+  // if not set current index + 1
+  if (index < lines.length - 1) {
+    occurrences += findNumberOfWords(lines, word, index + 1);
   }
 
   return occurrences;
