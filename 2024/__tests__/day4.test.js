@@ -24,12 +24,20 @@ describe("findNumberOfWords", () => {
     expect(findNumberOfWords(["SAMX"], "XMAS")).toBe(1);
   });
 
-  it("should return 1 when the given array contains the specified word diagonally left to right ", () => {
+  it("should return 1 when the given array contains the specified word diagonally down left to right ", () => {
     expect(findNumberOfWords(["X...", ".M..", "..A.", "...S"], "XMAS")).toBe(1);
   });
 
-  it("should return 1 when the given array contains the specified word diagonally right to left ", () => {
+  it("should return 1 when the given array contains the specified word diagonally up left to right ", () => {
+    expect(findNumberOfWords(["...S", "..A.", ".M..", "X..."], "XMAS")).toBe(1);
+  });
+
+  it("should return 1 when the given array contains the specified word diagonally down right to left ", () => {
     expect(findNumberOfWords(["...X", "..M.", ".A..", "S..."], "XMAS")).toBe(1);
+  });
+
+  it("should return 1 when the given array contains the specified word diagonally up right to left ", () => {
+    expect(findNumberOfWords(["S...", ".A..", "..M.", "...X"], "XMAS")).toBe(1);
   });
 
   it("should return 1 when the given array contains the specified word vertically top to bottom", () => {
