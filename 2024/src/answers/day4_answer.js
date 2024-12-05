@@ -5,8 +5,7 @@ const fileToRead = __dirname + "/../../data/day4_input.txt";
 fs.readFile(fileToRead, "utf-8")
   .then((fileContents) => fileContents.split("\n"))
   .then((lines) => {
-    const word = "XMAS";
-    const part1 = findNumberOfWords(lines, word);
+    const part1 = findNumberOfWords(lines, "XMAS");
     const part2 = 0;
 
     console.log(`part 1: ${part1}`);
