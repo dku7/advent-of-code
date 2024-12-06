@@ -72,4 +72,33 @@ describe("plotRoute", () => {
 
     expect(plotRoute(input)).toBe(43);
   });
+
+  it("should not mutate the passed in array", () => {
+    const input = [
+      "....#.....",
+      "....XXXXX#",
+      "....X...X.",
+      "..#.X...X.",
+      "..XXXXX#X.",
+      "..X.X.X.X.",
+      ".#XX^XXXX.",
+      ".XXXXXXX#.",
+      "#XXXXXXX..",
+      "......#X..",
+    ];
+
+    plotRoute(input);
+    expect(input).toEqual([
+      "....#.....",
+      "....XXXXX#",
+      "....X...X.",
+      "..#.X...X.",
+      "..XXXXX#X.",
+      "..X.X.X.X.",
+      ".#XX^XXXX.",
+      ".XXXXXXX#.",
+      "#XXXXXXX..",
+      "......#X..",
+    ]);
+  });
 });

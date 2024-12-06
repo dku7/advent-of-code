@@ -42,27 +42,27 @@ const turn = (direction) => {
   return directions[newIndex];
 };
 
-const go = (direction, map, startCoords) => {
+const go = (direction, map, startingFrom) => {
   switch (direction) {
     case FACING_UP:
-      return goUp(map, startCoords);
+      return goUp(map, startingFrom);
     case FACING_DOWN:
-      return goDown(map, startCoords);
+      return goDown(map, startingFrom);
     case FACING_RIGHT:
-      return goRight(map, startCoords);
+      return goRight(map, startingFrom);
     case FACING_LEFT:
-      return goLeft(map, startCoords);
+      return goLeft(map, startingFrom);
   }
 };
 
-function goUp(map, startCoords) {
-  let moves = [];
-  const x = startCoords.x;
-  const newCoords = { ...startCoords };
+function goUp(map, startingFrom) {
+  const moves = [];
+  const newCoords = { ...startingFrom };
   let obstacleFound = false;
 
-  for (let y = startCoords.y - 1; y >= 0; y--) {
-    const move = moveTo(map, x, y);
+  for (let y = startingFrom.y - 1; y >= 0; y--) {
+    const move = moveTo(map, startingFrom.x, y);
+
     if (move.successful) {
       moves.push([...move.coords]);
       newCoords.y--;
@@ -75,14 +75,14 @@ function goUp(map, startCoords) {
   return { moves, newCoords, obstacleFound };
 }
 
-function goDown(map, startCoords) {
-  let moves = [];
-  const x = startCoords.x;
-  const newCoords = { ...startCoords };
+function goDown(map, startingFrom) {
+  const moves = [];
+  const newCoords = { ...startingFrom };
   let obstacleFound = false;
 
-  for (let y = startCoords.y + 1; y < map.length; y++) {
-    const move = moveTo(map, x, y);
+  for (let y = startingFrom.y + 1; y < map.length; y++) {
+    const move = moveTo(map, startingFrom.x, y);
+
     if (move.successful) {
       moves.push([...move.coords]);
       newCoords.y++;
@@ -95,14 +95,15 @@ function goDown(map, startCoords) {
   return { moves, newCoords, obstacleFound };
 }
 
-function goRight(map, startCoords) {
-  let moves = [];
-  const y = startCoords.y;
-  const newCoords = { ...startCoords };
+function goRight(map, startingFrom) {
+  const moves = [];
+  const y = startingFrom.y;
+  const newCoords = { ...startingFrom };
   let obstacleFound = false;
 
-  for (let x = startCoords.x + 1; x <= map[y].length; x++) {
+  for (let x = startingFrom.x + 1; x <= map[y].length; x++) {
     const move = moveTo(map, x, y);
+
     if (move.successful) {
       moves.push([...move.coords]);
       newCoords.x++;
@@ -115,14 +116,14 @@ function goRight(map, startCoords) {
   return { moves, newCoords, obstacleFound };
 }
 
-function goLeft(map, startCoords) {
-  let moves = [];
-  const y = startCoords.y;
-  const newCoords = { ...startCoords };
+function goLeft(map, startingFrom) {
+  const moves = [];
+  const newCoords = { ...startingFrom };
   let obstacleFound = false;
 
-  for (let x = startCoords.x - 1; x >= 0; x--) {
-    const move = moveTo(map, x, y);
+  for (let x = startingFrom.x - 1; x >= 0; x--) {
+    const move = moveTo(map, x, startingFrom.y);
+
     if (move.successful) {
       moves.push([...move.coords]);
       newCoords.x--;
@@ -135,13 +136,10 @@ function goLeft(map, startCoords) {
   return { moves, newCoords, obstacleFound };
 }
 
-function travel(direction, map, startCoords) {
+function travel(towards, map, startingFrom) {
   let totalMoves = [];
-  let stage = {};
-  let towards = direction;
-  let coords = startCoords;
+  const stage = go(towards, map, startingFrom);
 
-  stage = go(towards, map, coords);
   totalMoves = [...totalMoves, ...stage.moves];
 
   if (stage.moves.length > 0 && stage.obstacleFound)
@@ -154,11 +152,11 @@ function travel(direction, map, startCoords) {
 }
 
 function plotRoute(map) {
-  const coords = getStartCoords(map);
-  const direction = getFacingDirection(map[coords.y][coords.x]);
-  const areaCovered = travel(direction, map, coords);
-
+  const startingFrom = getStartCoords(map);
+  const direction = getFacingDirection(map[startingFrom.y][startingFrom.x]);
+  const areaCovered = travel(direction, map, startingFrom);
   const locationsSet = new Set(areaCovered.map(JSON.stringify));
+
   return Array.from(locationsSet).length;
 }
 
