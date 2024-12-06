@@ -43,16 +43,15 @@ function getFacingDirection(line) {
 
 const obstacleFound = (marker) => marker === "#";
 
-const move = (map, y, x) => (obstacleFound(map[y][x]) ? [] : [y, x]);
+const move = (map, x, y) => (obstacleFound(map[y][x]) ? [] : [x, y]);
 
 const travelDown = (map, startCoords) => {
   let moves = [];
-  const yPos = startCoords.y;
-  const xPos = startCoords.x;
+  const x = startCoords.x;
   const newCoords = { ...startCoords };
 
-  for (let i = yPos + 1; i < map.length; i++) {
-    const step = move(map, i, xPos);
+  for (let y = startCoords.y + 1; y < map.length; y++) {
+    const step = move(map, x, y);
     if (step.length > 0) {
       moves.push([...step]);
       newCoords.y++;
@@ -65,12 +64,11 @@ const travelDown = (map, startCoords) => {
 
 const travelUp = (map, startCoords) => {
   let moves = [];
-  const yPos = startCoords.y;
-  const xPos = startCoords.x;
+  const x = startCoords.x;
   const newCoords = { ...startCoords };
 
-  for (let i = yPos - 1; i >= 0; i--) {
-    const step = move(map, i, xPos);
+  for (let y = startCoords.y - 1; y >= 0; y--) {
+    const step = move(map, x, y);
     if (step.length > 0) {
       moves.push([...step]);
       newCoords.y--;
@@ -84,12 +82,11 @@ const travelUp = (map, startCoords) => {
 
 const travelRight = (map, startCoords) => {
   let moves = [];
-  const yPos = startCoords.y;
-  const xPos = startCoords.x;
+  const y = startCoords.y;
   const newCoords = { ...startCoords };
 
-  for (let i = xPos + 1; i <= map[yPos].length; i++) {
-    const step = move(map, yPos, i);
+  for (let x = startCoords.x + 1; x <= map[y].length; x++) {
+    const step = move(map, x, y);
     if (step.length > 0) {
       moves.push([...step]);
       newCoords.x++;
@@ -102,12 +99,11 @@ const travelRight = (map, startCoords) => {
 
 const travelLeft = (map, startCoords) => {
   let moves = [];
-  const yPos = startCoords.y;
-  const xPos = startCoords.x;
+  const y = startCoords.y;
   const newCoords = { ...startCoords };
 
-  for (let i = xPos - 1; i >= 0; i--) {
-    const step = move(map, yPos, i);
+  for (let x = startCoords.x - 1; x >= 0; x--) {
+    const step = move(map, x, y);
     if (step.length > 0) {
       moves.push([...step]);
       newCoords.x--;
