@@ -21,12 +21,12 @@ const getMarkerPos = (line) => line.search(/(\^|v|<|>)/);
 const getStartCoords = (map) => {
   const coords = { x: -1, y: -1 };
 
-  for (let i = 0; i < map.length; i++) {
-    const markerPos = getMarkerPos(map[i]);
+  for (let y = 0; y < map.length; y++) {
+    const markerPos = getMarkerPos(map[y]);
 
     if (markerPos !== -1) {
       coords.x = markerPos;
-      coords.y = i;
+      coords.y = y;
       break;
     }
   }
@@ -49,88 +49,120 @@ const travelDown = (map, startCoords) => {
   let moves = [];
   const x = startCoords.x;
   const newCoords = { ...startCoords };
+  let obstacle = false;
 
   for (let y = startCoords.y + 1; y < map.length; y++) {
     const step = move(map, x, y);
     if (step.length > 0) {
       moves.push([...step]);
       newCoords.y++;
-    } else break;
+    } else {
+      obstacle = true;
+      break;
+    }
   }
 
-  // console.log(`travelled down: ${moves.length}`);
-  return { moves, newCoords };
+  return { moves, newCoords, obstacle };
 };
 
 const travelUp = (map, startCoords) => {
   let moves = [];
   const x = startCoords.x;
   const newCoords = { ...startCoords };
+  let obstacle = false;
 
   for (let y = startCoords.y - 1; y >= 0; y--) {
     const step = move(map, x, y);
     if (step.length > 0) {
       moves.push([...step]);
       newCoords.y--;
-    } else break;
+    } else {
+      obstacle = true;
+      break;
+    }
   }
 
-  // console.log(`travelled up: ${moves.length}`);
-
-  return { moves, newCoords };
+  return { moves, newCoords, obstacle };
 };
 
 const travelRight = (map, startCoords) => {
   let moves = [];
   const y = startCoords.y;
   const newCoords = { ...startCoords };
+  let obstacle = false;
 
   for (let x = startCoords.x + 1; x <= map[y].length; x++) {
     const step = move(map, x, y);
     if (step.length > 0) {
       moves.push([...step]);
       newCoords.x++;
-    } else break;
+    } else {
+      obstacle = true;
+      break;
+    }
   }
 
-  // console.log(`travelled right: ${moves.length}`);
-  return { moves, newCoords };
+  return { moves, newCoords, obstacle };
 };
 
 const travelLeft = (map, startCoords) => {
   let moves = [];
   const y = startCoords.y;
   const newCoords = { ...startCoords };
+  let obstacle = false;
 
   for (let x = startCoords.x - 1; x >= 0; x--) {
     const step = move(map, x, y);
     if (step.length > 0) {
       moves.push([...step]);
       newCoords.x--;
-    } else break;
+    } else {
+      obstacle = true;
+      break;
+    }
   }
 
-  // console.log(`travelled left: ${moves.length}`);
-  return { moves, newCoords };
+  return { moves, newCoords, obstacle };
 };
 const turn = (direction) => {
   const currentIndex = directions.indexOf(direction);
   const newIndex = (currentIndex + 1) % directions.length;
   const newDirection = directions[newIndex];
 
-  // console.log(`Turning: previous direction: ${direction} (index: ${currentIndex}),
-  //   new direction: ${newDirection} (index: ${newIndex})`);
   return newDirection;
 };
 
-function travel(map, startCoords, direction, iteration = 1) {
+const getNextCoord = (direction, coords) => {
+  const newCoords = { ...coords };
+  switch (direction) {
+    case FACING_UP:
+      newCoords.y--;
+      break;
+    case FACING_DOWN:
+      newCoords.y++;
+      break;
+    case FACING_RIGHT:
+      newCoords.x++;
+      break;
+    case FACING_LEFT:
+      newCoords.x--;
+      break;
+  }
+
+  return newCoords;
+};
+
+const alreadyTravelled = (plots, coords) =>
+  plots.find((plot) => plot[0] === coords.x && plot[1] === coords.y);
+
+function travel(map, startCoords, direction) {
   let totalMoves = [];
   let travelled = {};
-  let travelDirection = direction;
+  let newDirection = direction;
   let coords = startCoords;
 
   while (true) {
-    switch (travelDirection) {
+    switch (newDirection) {
       case FACING_UP:
         travelled = travelUp(map, coords);
         break;
@@ -149,11 +181,12 @@ function travel(map, startCoords, direction, iteration = 1) {
 
     totalMoves = [...totalMoves, ...travelled.moves];
 
-    travelDirection = turn(travelDirection);
-    coords = travelled.newCoords;
-    //console.log(`going ${travelDirection}, coords: ${JSON.stringify(coords)}`);
-
-    if (travelled.moves.length === 0) break;
+    if (travelled.moves.length > 0) {
+      if (travelled.obstacle) {
+        newDirection = turn(newDirection);
+        coords = travelled.newCoords;
+      } else break;
+    } else break; // we didn't go anywhere
   }
 
   return totalMoves;
@@ -164,9 +197,8 @@ function plotRoute(map) {
   const direction = getFacingDirection(map[startCoords.y]);
   const coordsCovered = travel(map, startCoords, direction);
 
-  let set = new Set(coordsCovered.map(JSON.stringify));
-  let arr2 = Array.from(set).map(JSON.parse);
-  return arr2.length;
+  const locationsSet = new Set(coordsCovered.map(JSON.stringify));
+  return Array.from(locationsSet).length;
 }
 
 module.exports = {

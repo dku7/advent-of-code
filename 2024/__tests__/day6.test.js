@@ -80,22 +80,22 @@ describe("plotRoute", () => {
     expect(plotRoute(input)).toBe(41);
   });
 
-  // it.only("should return 41 when able to travel in all directions multiple times", () => {
-  //   const input = [
-  //     "....#.....",
-  //     "....XXXXX#",
-  //     "....X...X.",
-  //     "..#.X...X.",
-  //     "..XXXXX#X.",
-  //     "..X.X.X.X.",
-  //     ".#XX^XXXX.",
-  //     ".XXXXXXX#.",
-  //     "#XXXXXXX..",
-  //     "#.....#X..",
-  //     "XXXXXX#X..",
-  //     "XXXXXXXX..",
-  //   ]
+  it("should return 41 when able to travel in all directions multiple times", () => {
+    const input = [
+      "....#.....", //0
+      "....XXXXX#", //1
+      "....X...X.", //2
+      "..#.X...X.", //3
+      "..XXXXX#X.", //4
+      "..X.X.X.X.", //5
+      ".#XX^XXXX.", //6
+      ".XXXXXXX#.", //7
+      "#XXXXXXX..", //8
+      "#.....#X..", //9
+      "......#X..", //10
+      ".......X..", //11
+    ];
 
-  //   expect(plotRoute(input)).toBe(41);
-  // });
+    expect(plotRoute(input)).toBe(43);
+  });
 });
