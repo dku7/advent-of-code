@@ -1,30 +1,4 @@
-const { plotRoute, getFacingDirection } = require("../src/day6");
-
-describe("getFacingDirection", () => {
-  it("should return UP when facing up", () => {
-    const input = "......#^..";
-
-    expect(getFacingDirection(input)).toBe("UP");
-  });
-
-  it("should return DOWN when facing down", () => {
-    const input = "......#v..";
-
-    expect(getFacingDirection(input)).toBe("DOWN");
-  });
-
-  it("should return RIGHT when facing right", () => {
-    const input = "......#>..";
-
-    expect(getFacingDirection(input)).toBe("RIGHT");
-  });
-
-  it("should return LEFT when facing left", () => {
-    const input = "......#<..";
-
-    expect(getFacingDirection(input)).toBe("LEFT");
-  });
-});
+const plotRoute = require("../src/day6");
 
 describe("plotRoute", () => {
   it("should return 0 when unable to travel", () => {

@@ -1,4 +1,4 @@
-const { plotRoute } = require("../day6");
+const plotRoute = require("../day6");
 const fs = require("fs/promises");
 const fileToRead = __dirname + "/../../data/day6_input.txt";
 

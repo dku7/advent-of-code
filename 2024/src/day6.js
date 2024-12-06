@@ -9,29 +9,40 @@ const FACING_RIGHT = "RIGHT";
 const FACING_LEFT = "LEFT";
 const directions = [FACING_UP, FACING_RIGHT, FACING_DOWN, FACING_LEFT];
 
+const facingDirections = {
+  [MARKER_UP]: FACING_UP,
+  [MARKER_DOWN]: FACING_DOWN,
+  [MARKER_RIGHT]: FACING_RIGHT,
+  [MARKER_LEFT]: FACING_LEFT,
+};
+
 const getMarkerPos = (line) => line.search(/(\^|v|<|>)/);
+
+const getFacingDirection = (marker) => facingDirections[marker];
+
 const obstacleFound = (marker) => marker === "#";
-const move = (map, x, y) =>
+
+const moveTo = (map, x, y) =>
   obstacleFound(map[y][x])
     ? { successful: false, coords: [] }
     : { successful: true, coords: [x, y] };
 
-function getStartCoords(map) {
+const getStartCoords = (map) => {
   for (let y = 0; y < map.length; y++) {
     const markerPos = getMarkerPos(map[y]);
 
     if (markerPos !== -1) return { x: markerPos, y };
   }
-}
+};
 
-function getFacingDirection(line) {
-  if (line.indexOf(MARKER_UP) !== -1) return FACING_UP;
-  if (line.indexOf(MARKER_DOWN) !== -1) return FACING_DOWN;
-  if (line.indexOf(MARKER_RIGHT) !== -1) return FACING_RIGHT;
-  if (line.indexOf(MARKER_LEFT) !== -1) return FACING_LEFT;
-}
+const turn = (direction) => {
+  const currentIndex = directions.indexOf(direction);
+  const newIndex = (currentIndex + 1) % directions.length;
 
-const go = (map, startCoords, direction) => {
+  return directions[newIndex];
+};
+
+const go = (direction, map, startCoords) => {
   switch (direction) {
     case FACING_UP:
       return goUp(map, startCoords);
@@ -44,124 +55,111 @@ const go = (map, startCoords, direction) => {
   }
 };
 
-const goDown = (map, startCoords) => {
+function goUp(map, startCoords) {
   let moves = [];
   const x = startCoords.x;
   const newCoords = { ...startCoords };
-  let obstacle = false;
-
-  for (let y = startCoords.y + 1; y < map.length; y++) {
-    const moved = move(map, x, y);
-    if (moved.successful) {
-      moves.push([...moved.coords]);
-      newCoords.y++;
-    } else {
-      obstacle = true;
-      break;
-    }
-  }
-
-  return { moves, newCoords, obstacle };
-};
-
-const goUp = (map, startCoords) => {
-  let moves = [];
-  const x = startCoords.x;
-  const newCoords = { ...startCoords };
-  let obstacle = false;
+  let obstacleFound = false;
 
   for (let y = startCoords.y - 1; y >= 0; y--) {
-    const moved = move(map, x, y);
-    if (moved.successful) {
-      moves.push([...moved.coords]);
+    const move = moveTo(map, x, y);
+    if (move.successful) {
+      moves.push([...move.coords]);
       newCoords.y--;
     } else {
-      obstacle = true;
+      obstacleFound = true;
       break;
     }
   }
 
-  return { moves, newCoords, obstacle };
-};
+  return { moves, newCoords, obstacleFound };
+}
 
-const goRight = (map, startCoords) => {
+function goDown(map, startCoords) {
+  let moves = [];
+  const x = startCoords.x;
+  const newCoords = { ...startCoords };
+  let obstacleFound = false;
+
+  for (let y = startCoords.y + 1; y < map.length; y++) {
+    const move = moveTo(map, x, y);
+    if (move.successful) {
+      moves.push([...move.coords]);
+      newCoords.y++;
+    } else {
+      obstacleFound = true;
+      break;
+    }
+  }
+
+  return { moves, newCoords, obstacleFound };
+}
+
+function goRight(map, startCoords) {
   let moves = [];
   const y = startCoords.y;
   const newCoords = { ...startCoords };
-  let obstacle = false;
+  let obstacleFound = false;
 
   for (let x = startCoords.x + 1; x <= map[y].length; x++) {
-    const moved = move(map, x, y);
-    if (moved.successful) {
-      moves.push([...moved.coords]);
+    const move = moveTo(map, x, y);
+    if (move.successful) {
+      moves.push([...move.coords]);
       newCoords.x++;
     } else {
-      obstacle = true;
+      obstacleFound = true;
       break;
     }
   }
 
-  return { moves, newCoords, obstacle };
-};
+  return { moves, newCoords, obstacleFound };
+}
 
-const goLeft = (map, startCoords) => {
+function goLeft(map, startCoords) {
   let moves = [];
   const y = startCoords.y;
   const newCoords = { ...startCoords };
-  let obstacle = false;
+  let obstacleFound = false;
 
   for (let x = startCoords.x - 1; x >= 0; x--) {
-    const moved = move(map, x, y);
-    if (moved.successful) {
-      moves.push([...moved.coords]);
+    const move = moveTo(map, x, y);
+    if (move.successful) {
+      moves.push([...move.coords]);
       newCoords.x--;
     } else {
-      obstacle = true;
+      obstacleFound = true;
       break;
     }
   }
 
-  return { moves, newCoords, obstacle };
-};
-const turn = (direction) => {
-  const currentIndex = directions.indexOf(direction);
-  const newIndex = (currentIndex + 1) % directions.length;
-  const newDirection = directions[newIndex];
+  return { moves, newCoords, obstacleFound };
+}
 
-  return newDirection;
-};
-
-function travel(map, startCoords, direction) {
+function travel(direction, map, startCoords) {
   let totalMoves = [];
-  let travelled = {};
+  let stage = {};
   let towards = direction;
   let coords = startCoords;
 
-  while (true) {
-    travelled = go(map, coords, towards);
-    totalMoves = [...totalMoves, ...travelled.moves];
+  stage = go(towards, map, coords);
+  totalMoves = [...totalMoves, ...stage.moves];
 
-    if (travelled.moves.length > 0) {
-      if (travelled.obstacle) {
-        towards = turn(towards);
-        coords = travelled.newCoords;
-      } else break;
-    } else break;
-  }
+  if (stage.moves.length > 0 && stage.obstacleFound)
+    totalMoves = [
+      ...totalMoves,
+      ...travel(turn(towards), map, stage.newCoords),
+    ];
 
   return totalMoves;
 }
 
 function plotRoute(map) {
-  const startCoords = getStartCoords(map);
-  const direction = getFacingDirection(map[startCoords.y]);
-  const coordsCovered = travel(map, startCoords, direction);
+  const coords = getStartCoords(map);
+  const direction = getFacingDirection(map[coords.y][coords.x]);
+  const areaCovered = travel(direction, map, coords);
 
-  const locationsSet = new Set(coordsCovered.map(JSON.stringify));
+  const locationsSet = new Set(areaCovered.map(JSON.stringify));
   return Array.from(locationsSet).length;
 }
 
-module.exports = {
-  plotRoute,
-  getFacingDirection,
-};
+module.exports = plotRoute;
