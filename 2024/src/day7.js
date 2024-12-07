@@ -1,9 +1,13 @@
 const add = (num1, num2) => num1 + num2;
 const multiply = (num1, num2) => num1 * num2;
-const operators = [add, multiply];
+const concat = (num1, num2) => Number(`${num1}${num2}`);
 
-function buildListOfOperators(numberOfNumbers) {
+const operators = [add, multiply];
+const operatorsWithConcat = [add, multiply, concat];
+
+function buildListOfOperators(numberOfNumbers, useConcat) {
   const operatorList = [];
+  const operatorsToUse = useConcat ? operatorsWithConcat : operators;
 
   const build = (currentList) => {
     if (currentList.length === numberOfNumbers) {
@@ -11,7 +15,7 @@ function buildListOfOperators(numberOfNumbers) {
       return operatorList;
     }
 
-    for (const operator of operators) {
+    for (const operator of operatorsToUse) {
       currentList.push(operator);
       build(currentList);
       currentList.pop();
@@ -28,8 +32,8 @@ const allAdded = (numbers) =>
 const allMultiplied = (numbers) =>
   numbers.reduce((total, number) => (total *= number));
 
-function testNumbers(testValue, numbers) {
-  const operatorList = buildListOfOperators(numbers.length);
+function testNumbers(testValue, numbers, useConcat) {
+  const operatorList = buildListOfOperators(numbers.length, useConcat);
   let total = 0;
 
   if (allAdded(numbers) === testValue) return testValue;
@@ -54,19 +58,20 @@ const getParts = (equation) => {
   return { testValue, numbers };
 };
 
-function calibrate(input) {
+function calibrate(input, useConcat = false) {
   const regEx = /(\d+): (\d+(?:\s\d+)*)/g;
   let total = 0;
 
-  for (line of input) {
+  input.forEach((line) => {
     const equations = line.matchAll(regEx);
 
     for (const equation of equations) {
       const parts = getParts(equation);
 
-      if (testNumbers(parts.testValue, parts.numbers)) total += parts.testValue;
+      if (testNumbers(parts.testValue, parts.numbers, useConcat))
+        total += parts.testValue;
     }
-  }
+  });
 
   return total;
 }
