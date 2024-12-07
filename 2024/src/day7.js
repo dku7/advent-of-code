@@ -12,7 +12,7 @@ function buildListOfOperators(numberOfNumbers, useConcat) {
   const build = (currentList) => {
     if (currentList.length === numberOfNumbers) {
       operatorList.push([...currentList]);
-      return operatorList;
+      return;
     }
 
     for (const operator of operatorsToUse) {
@@ -43,7 +43,7 @@ function testNumbers(testValue, numbers, useConcat) {
     for (let i = 0; i < operators.length - 1; i++) {
       const operatorFunction = operators[i];
 
-      total = i === 0 ? numbers[0] : total;
+      if (i === 0) total = numbers[0];
       total = operatorFunction(total, numbers[i + 1]);
     }
 
