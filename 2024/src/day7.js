@@ -62,7 +62,7 @@ function calibrate(input, useConcat = false) {
   const regEx = /(\d+): (\d+(?:\s\d+)*)/g;
   let total = 0;
 
-  input.forEach((line) => {
+  for (const line of input) {
     const equations = line.matchAll(regEx);
 
     for (const equation of equations) {
@@ -71,7 +71,7 @@ function calibrate(input, useConcat = false) {
       if (testNumbers(parts.testValue, parts.numbers, useConcat))
         total += parts.testValue;
     }
-  });
+  }
 
   return total;
 }
