@@ -37,8 +37,10 @@ function testNumbers(testValue, numbers) {
 
   for (const operators of operatorList) {
     for (let i = 0; i < operators.length - 1; i++) {
+      const operatorFunction = operators[i];
+
       total = i === 0 ? numbers[0] : total;
-      total = operators[i](total, numbers[i + 1]);
+      total = operatorFunction(total, numbers[i + 1]);
     }
 
     if (total === testValue) return testValue;
