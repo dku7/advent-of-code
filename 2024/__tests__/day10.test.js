@@ -8,12 +8,6 @@ describe("getNumberOfTrailheads", () => {
   it("should return 1 when there is one trailhead", () => {
     expect(getNumberOfTrailheads(["0123", "1234", "8765", "9876"])).toBe(1);
   });
-  /*
-  "0123", 
-  "1234", 
-  "8765", 
-  "9876"
-  */
 
   it("should return 2 when there are two trailheads forking left and right", () => {
     expect(

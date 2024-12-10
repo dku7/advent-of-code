@@ -29,16 +29,12 @@ const DOWN = 3;
 const turn = (direction) => (direction + 1) % (DOWN + 1);
 
 function trace(lines, config) {
-  let result = false;
   const newConfig = { ...config };
-  // newConfig.direction = LEFT;
 
   if (!newConfig?.direction) newConfig.direction = LEFT;
   if (newConfig.nextNumber === -1) return true;
 
   if (newConfig.direction === LEFT) {
-    // can we go left? if so try to find the number
-    // else switch direction
     if (newConfig.lastRef.x > 0) {
       foundNumber = lines[newConfig.lastRef.y][newConfig.lastRef.x - 1];
 
@@ -49,66 +45,50 @@ function trace(lines, config) {
         if (trace(lines, newConfig)) return true;
       }
     }
-    newConfig.direction++;
 
+    newConfig.direction++;
     if (trace(lines, newConfig)) return true;
   } else if (newConfig.direction === UP) {
-    console.log("UP");
-    // can we go up?
-    if (newConfig.lastRef.y === 0) {
-      // newConfig.lastDirection = newConfig.direction;
-      newConfig.direction++; // = turn(newConfig.direction);
-    } else {
+    if (newConfig.lastRef.y > 0) {
       foundNumber = lines[newConfig.lastRef.y - 1][newConfig.lastRef.x];
 
       if (foundNumber === newConfig.nextNumber) {
-        // if (newConfig.nextNumber === 0) return true;
-        //else {
         newConfig.nextNumber--;
         newConfig.lastRef.y--;
         newConfig.direction = LEFT;
-
         if (trace(lines, newConfig)) return true;
-      } else {
-        // newConfig.lastDirection = newConfig.direction;
-        // newConfig.direction++; //config.direction + 1,
-        newConfig.direction++; // = turn(newConfig.direction)
       }
     }
+
+    newConfig.direction++;
     if (trace(lines, newConfig)) return true;
   } else if (config.direction === RIGHT) {
-    console.log("RIGHT");
-    foundNumber = lines[newConfig.lastRef.y][newConfig.lastRef.x + 1];
+    if (newConfig.lastRef.x < lines[newConfig.lastRef.y].length - 1) {
+      foundNumber = lines[newConfig.lastRef.y][newConfig.lastRef.x + 1];
 
-    if (foundNumber === newConfig.nextNumber) {
-      newConfig.nextNumber--;
-      newConfig.lastRef.x++;
-      newConfig.direction = LEFT;
-    } else {
-      // newConfig.lastDirection = newConfig.direction;
-      newConfig.direction++;
+      if (foundNumber === newConfig.nextNumber) {
+        newConfig.nextNumber--;
+        newConfig.lastRef.x++;
+        newConfig.direction = LEFT;
+        if (trace(lines, newConfig)) return true;
+      }
     }
+    // newConfig.lastDirection = newConfig.direction;
+    newConfig.direction++;
+
     if (trace(lines, newConfig)) return true;
   } else if (config.direction === DOWN) {
-    console.log("DOWN");
-    foundNumber = lines[newConfig.lastRef.y + 1][newConfig.lastRef.x];
+    if (newConfig.lastRef.y < lines.length - 1) {
+      foundNumber = lines[newConfig.lastRef.y + 1][newConfig.lastRef.x];
 
-    // we've reached the end don't reloop again
-    if (foundNumber === newConfig.nextNumber) {
-      newConfig.nextNumber--;
-      newConfig.lastRef.y++;
-      newConfig.direction = LEFT;
-      if (trace(lines, newConfig)) return true;
-    } //{
-    //   newConfig.lastDirection = newConfig.direction;
-    //   newConfig.direction = turn(newConfig.direction);
-    // }
-
-    // result = trace(lines, newConfig);
-    else return false;
-  } else return result;
-
-  return result;
+      if (foundNumber === newConfig.nextNumber) {
+        newConfig.nextNumber--;
+        newConfig.lastRef.y++;
+        newConfig.direction = LEFT;
+        if (trace(lines, newConfig)) return true;
+      }
+    } else return false;
+  }
 }
 
 const parseMap = (map) =>
