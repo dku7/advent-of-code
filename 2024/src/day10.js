@@ -26,67 +26,43 @@ const UP = 1;
 const RIGHT = 2;
 const DOWN = 3;
 
-const turn = (direction) => (direction + 1) % (DOWN + 1);
+function trace(lines, startRef, nextNumber = 8, direction = LEFT) {
+  const lastRef = { ...startRef };
 
-function trace(lines, config) {
-  const newConfig = { ...config };
+  if (nextNumber === -1) return true;
 
-  if (!newConfig?.direction) newConfig.direction = LEFT;
-  if (newConfig.nextNumber === -1) return true;
-
-  if (newConfig.direction === LEFT) {
-    if (newConfig.lastRef.x > 0) {
-      foundNumber = lines[newConfig.lastRef.y][newConfig.lastRef.x - 1];
-
-      if (foundNumber === newConfig.nextNumber) {
-        newConfig.nextNumber--;
-        newConfig.lastRef.x--;
-        newConfig.direction = LEFT;
-        if (trace(lines, newConfig)) return true;
-      }
+  if (direction === LEFT) {
+    if (lastRef.x > 0 && lines[lastRef.y][lastRef.x - 1] === nextNumber) {
+      lastRef.x--;
+      return trace(lines, lastRef, nextNumber - 1);
     }
 
-    newConfig.direction++;
-    if (trace(lines, newConfig)) return true;
-  } else if (newConfig.direction === UP) {
-    if (newConfig.lastRef.y > 0) {
-      foundNumber = lines[newConfig.lastRef.y - 1][newConfig.lastRef.x];
-
-      if (foundNumber === newConfig.nextNumber) {
-        newConfig.nextNumber--;
-        newConfig.lastRef.y--;
-        newConfig.direction = LEFT;
-        if (trace(lines, newConfig)) return true;
-      }
+    return trace(lines, lastRef, nextNumber, direction + 1);
+  } else if (direction === UP) {
+    if (lastRef.y > 0 && lines[lastRef.y - 1][lastRef.x] === nextNumber) {
+      lastRef.y--;
+      return trace(lines, lastRef, nextNumber - 1);
     }
 
-    newConfig.direction++;
-    if (trace(lines, newConfig)) return true;
-  } else if (config.direction === RIGHT) {
-    if (newConfig.lastRef.x < lines[newConfig.lastRef.y].length - 1) {
-      foundNumber = lines[newConfig.lastRef.y][newConfig.lastRef.x + 1];
-
-      if (foundNumber === newConfig.nextNumber) {
-        newConfig.nextNumber--;
-        newConfig.lastRef.x++;
-        newConfig.direction = LEFT;
-        if (trace(lines, newConfig)) return true;
-      }
+    return trace(lines, lastRef, nextNumber, direction + 1);
+  } else if (direction === RIGHT) {
+    if (
+      lastRef.x < lines[lastRef.y].length - 1 &&
+      lines[lastRef.y][lastRef.x + 1] === nextNumber
+    ) {
+      lastRef.x++;
+      return trace(lines, lastRef, nextNumber - 1);
     }
-    // newConfig.lastDirection = newConfig.direction;
-    newConfig.direction++;
 
-    if (trace(lines, newConfig)) return true;
-  } else if (config.direction === DOWN) {
-    if (newConfig.lastRef.y < lines.length - 1) {
-      foundNumber = lines[newConfig.lastRef.y + 1][newConfig.lastRef.x];
+    return trace(lines, lastRef, nextNumber, direction + 1);
+  } else if (direction === DOWN) {
+    if (
+      lastRef.y < lines.length - 1 &&
+      lines[lastRef.y + 1][lastRef.x] === nextNumber
+    ) {
+      lastRef.y++;
 
-      if (foundNumber === newConfig.nextNumber) {
-        newConfig.nextNumber--;
-        newConfig.lastRef.y++;
-        newConfig.direction = LEFT;
-        if (trace(lines, newConfig)) return true;
-      }
+      return trace(lines, lastRef, nextNumber - 1);
     } else return false;
   }
 }
@@ -100,15 +76,7 @@ function getNumberOfTrailheads(map) {
   const trailheads = getTrailheadRefs(lines);
 
   for (const trailhead of trailheads) {
-    const config = {
-      trailhead: { ...trailhead },
-      lastRef: { ...trailhead },
-      nextNumber: 8,
-      direction: LEFT,
-      // lastDirection: -1,
-    };
-
-    if (trace(lines, config)) noOfTrailheads++;
+    if (trace(lines, { ...trailhead })) noOfTrailheads++;
   }
 
   return noOfTrailheads;
