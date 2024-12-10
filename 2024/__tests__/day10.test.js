@@ -36,6 +36,4 @@ describe("getNumberOfTrailheads", () => {
       ])
     ).toBe(4);
   });
-
-  // check for mutation
 });
